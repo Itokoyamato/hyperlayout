@@ -111,7 +111,7 @@ function start() {
     return
   }
 
-  console.log('[hyperlayout config]:' + JSON.stringify(data))
+  console.log('[hyperlayout config]:' + JSON.stringify(data) + '[endconfig]')
 }
 
 start()
