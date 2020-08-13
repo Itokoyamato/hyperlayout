@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-const {readFileSync} = require('fs')
+const {readFileSync, existsSync} = require('fs')
 const {homedir} = require('os')
 const {resolve} = require('path')
 const vm = require('vm')
@@ -13,14 +13,15 @@ const readJson = (dir, file) => JSON.parse(readFileSync(`${dir}/${file}`, 'utf8'
 // Check if user has hyperlayout plugin installed
 const isPluginInstalled = () => {
   const path = resolve(homedir(), '.hyper.js')
+  const pathWin = resolve(`${homedir()}/AppData/Roaming/Hyper`, '.hyper.js')
   try {
-    const hyperConfig = readFileSync(path, 'utf8')
+    const hyperConfig = existsSync(path, 'utf8') ? readFileSync(path, 'utf8') : readFileSync(pathWin, 'utf8')
     const script = new vm.Script(hyperConfig)
     const module = {}
     script.runInNewContext({module})
     const {plugins, localPlugins} = module.exports
     const pluginArray = plugins.concat(localPlugins)
-    return pluginArray.includes('hyperlayout')
+    return pluginArray.join(',').includes('hyperlayout')
   } catch (err) {
     debug(err)
     return false
